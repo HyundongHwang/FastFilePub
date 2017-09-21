@@ -161,6 +161,7 @@ function ffp-upload
         $obj | Add-Member -MemberType NoteProperty -Name LocalFilePath -Value $_.FullName
     
         $randomId = New-PronounceablePassword
+        $extName = [System.IO.Path]::GetExtension($_.Name)
         $blobName = "$randomId/$($_.Name)"
         $hashStr = (Get-FileHash $_.FullName -Algorithm SHA256).Hash
         $blobDownloadUrl = $null
