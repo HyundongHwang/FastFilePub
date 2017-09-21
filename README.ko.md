@@ -1,12 +1,12 @@
 <!-- TOC -->
 
 - [FastFilePub](#fastfilepub)
-- [Intro](#intro)
-- [Install](#install)
-- [Initialize](#initialize)
-- [Upload file](#upload-file)
-- [List blobs](#list-blobs)
-- [Remove blobs](#remove-blobs)
+- [소개](#소개)
+- [설치](#설치)
+- [초기화](#초기화)
+- [파일 업로드](#파일-업로드)
+- [blob 조회](#blob-조회)
+- [blob 삭제](#blob-삭제)
 
 <!-- /TOC -->
 
@@ -15,29 +15,28 @@
 <br>
 
 # FastFilePub
+
 ![](https://raw.githubusercontent.com/HyundongHwang/FastFilePub/master/FastFilePub-icon.png)
 
-[한국어로 보기](/README-ko.md)
+# 소개
+- 아주 간단한 파일 업로드 스크립트
+- Azure Storage Table, Blob 을 이용하기 때문에 사전에 Azure Storage Connection 을 설정해 주어야 함.
+- 보안을 위해서 `https://fastfilepub.blob.core.windows.net/pub/{RANDOM-ID}/{FILE-NAME}` 형태로 url을 만들어줌.
+- 한번 올라간 파일은 hash값을 계산해서 따로 저장하고 있기 때문에, 같은파일이 한번더 업로드 되면 같은파일의 url을 즉시 반환함.
 
-# Intro
-- Very simple file upload script
-- Azure Storage Table, Blob is used to set up Azure Storage Connection in advance.
-- For security purposes, create url in the form `https://fastfilepub.blob.core.windows.net/pub/{RANDOM-ID}/{FILE-NAME}`.
-- Once a file has been uploaded, it hash value is calculated and stored separately, so if the same file is uploaded more than once, the url of the same file is returned immediately.
-
-# Install
+# 설치
 
 ```powershell
 PS> Install-Module fastfilepub
 ```
 
-# Initialize
+# 초기화
 
 ```powershell
 PS> ffp-init "DefaultEndpointsProtocol=https;AccountName=fastfilepub;AccountKey=icAGEnuTjSO26H....G98H5LbSBNFEEKY4rA==;EndpointSuffix=core.windows.net"
 ```
 
-# Upload file
+# 파일 업로드
 
 ```powershell
 PS> ffp-upload .\keep-canonical-history-correct.html
@@ -64,7 +63,7 @@ C:\temp\revert-a-faulty-merge.html          https://fastfilepub.blob.core.window
 C:\temp\revert-branch-rebase.html           https://fastfilepub.blob.core.windows.net/pub/TrieLiJezr/revert-branch-rebase.html
 ```
 
-# List blobs
+# blob 조회
 
 ```powershell
 PS> ffp-list
@@ -80,7 +79,7 @@ https://fastfilepub.blob.core.windows.net/pub/TledtPular/maintain-git.html
 https://fastfilepub.blob.core.windows.net/pub/TrieLiJezr/revert-branch-rebase.html
 ```
 
-# Remove blobs
+# blob 삭제
 
 ```powershell
 PS C:\temp> ffp-remove "*recover*"
