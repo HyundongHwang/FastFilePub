@@ -108,7 +108,11 @@ function ffp-upload
     (
         [Parameter(Mandatory=$true, ValueFromPipeline=$true, ValueFromPipelinebyPropertyName=$true)]
         [string]
-        $FILE_NAME
+        $FILE_NAME,
+
+        [switch]
+        [Parameter(Mandatory=$false, ValueFromPipeline=$true, ValueFromPipelinebyPropertyName=$true)]
+        $KEEP_DIR_STRUCTURE
     )
 
 
@@ -159,10 +163,20 @@ function ffp-upload
     foreach {
         $obj = New-Object -typename PSObject
         $obj | Add-Member -MemberType NoteProperty -Name LocalFilePath -Value $_.FullName
-    
-        $randomId = New-PronounceablePassword
         $extName = [System.IO.Path]::GetExtension($_.Name)
-        $blobName = "$randomId/$($_.Name)"
+        $blobName = ""
+
+        if ($KEEP_DIR_STRUCTURE)
+        {
+            $idx = $_.FullName.IndexOf($FILE_NAME)
+            $blobName = $_.FullName.Substring($idx)
+        }
+        else
+        {
+            $randomId = New-PronounceablePassword
+            $blobName = "$randomId/$($_.Name)"
+        }
+
         $hashStr = (Get-FileHash $_.FullName -Algorithm SHA256).Hash
         $blobDownloadUrl = $null
         $row = $null
