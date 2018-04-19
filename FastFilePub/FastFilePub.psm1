@@ -181,12 +181,15 @@ function ffp-upload
         $blobDownloadUrl = $null
         $row = $null
 
-        try 
+        if (!$KEEP_DIR_STRUCTURE)
         {
-            $row = Get-AzureStorageTableRowByColumnName -table $pubHashUrlTable -columnName RowKey -value $hashStr -operator Equal
-        }
-        catch 
-        {
+            try 
+            {
+                $row = Get-AzureStorageTableRowByColumnName -table $pubHashUrlTable -columnName RowKey -value $hashStr -operator Equal
+            }
+            catch 
+            {
+            }
         }
     
         if ($row -eq $null)
@@ -250,14 +253,18 @@ function ffp-upload
         
             $blob = Set-AzureStorageBlobContent -Context $global:G_STORAGE_CONTEXT -Container pub -File $_.FullName -Blob $blobName -Force -Properties $props
             $blobDownloadUrl = $blob.ICloudBlob.Uri.AbsoluteUri.ToString()
-            $blobDownloadUrlEnc = [System.Web.HttpUtility]::UrlEncode($blobDownloadUrl) 
 
-            $unused = Add-StorageTableRow -table $pubHashUrlTable -partitionKey "partitionKey" -rowKey $hashStr -property @{
-                "BlobDownloadUrl" = $blobDownloadUrl;
-            }
-    
-            $unused = Add-StorageTableRow -table $pubUrlHashTable -partitionKey "partitionKey" -rowKey $blobDownloadUrlEnc -property @{
-                "HashStr" = $hashStr;
+            if (!$KEEP_DIR_STRUCTURE)
+            {
+                $blobDownloadUrlEnc = [System.Web.HttpUtility]::UrlEncode($blobDownloadUrl) 
+
+                $unused = Add-StorageTableRow -table $pubHashUrlTable -partitionKey "partitionKey" -rowKey $hashStr -property @{
+                    "BlobDownloadUrl" = $blobDownloadUrl;
+                }
+        
+                $unused = Add-StorageTableRow -table $pubUrlHashTable -partitionKey "partitionKey" -rowKey $blobDownloadUrlEnc -property @{
+                    "HashStr" = $hashStr;
+                }                
             }
         }
         else 
