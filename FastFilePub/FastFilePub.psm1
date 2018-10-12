@@ -159,7 +159,7 @@ function ffp-upload
 
     
     
-    ls $FILE_NAME -File -Force -Recurse | 
+    Get-ChildItem $FILE_NAME -File -Force -Recurse | 
     foreach {
         $obj = New-Object -typename PSObject
         $obj | Add-Member -MemberType NoteProperty -Name LocalFilePath -Value $_.FullName
@@ -369,9 +369,11 @@ function ffp-remove
 
 
 
-ffp-module-install-import MlkPwgen
-ffp-module-install-import AzureRmStorageTable
+ffp-module-install-import Az -Verbose
+ffp-module-install-import MlkPwgen -Verbose
+ffp-module-install-import AzureRmStorageTable -Verbose
 Add-Type -Path "C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\System.Web.dll"
+Enable-AzureRmAlias
 
 
 
